@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Admin Dashboard</title>
+    <style>
+        /* General Body Styling */
+        body { 
+            background-color: #e9ecef; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            color: #343a40; /* Dark text for contrast */
+        }
+        /* Main Container */
+        .container { 
+            margin: 50px auto; 
+            max-width: 900px; 
+            padding: 30px; 
+            background: white; 
+            border-radius: 10px; 
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); 
+        }
+        /* Page Headers */
+        h1 { 
+            text-align: center; 
+            color: #088f86; 
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        h2 { 
+            color: #088f86; 
+            border-bottom: 2px solid #0b4440; 
+            padding-bottom: 10px; 
+            margin: 25px 0 15px; 
+            font-size: 1.8em;
+        }
+        /* Navigation Bar */
+        nav {
+            background-color: #088f86;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        nav a {
+            color: white;
+            margin: 0 10px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s, text-shadow 0.3s;
+        }
+        nav a:hover {
+            color: #d4e157;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
+        }
+        /* List Styling */
+        ul {
+            list-style: none; 
+            padding: 0; 
+            margin: 0;
+        }
+        li {
+            background: #f8f9fa; 
+            margin: 10px 0; 
+            padding: 15px; 
+            border-radius: 8px; 
+            transition: background 0.3s;
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+        }
+        li:hover {
+            background: #e2e6ea;
+            transform: scale(1.02); /* Subtle scale effect */
+        }
+        /* User Item Styling */
+        .user-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+        /* Buttons */
+        .delete-button, .manage-button {
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.3s;
+        }
+        .delete-button {
+            background: #dc3545; /* Red for delete */
+        }
+        .delete-button:hover {
+            background: #c82333;
+            transform: scale(1.05);
+        }
+        .manage-button {
+            background-color: #3d6188; /* Blue for manage */
+            margin: 5px 0;
+        }
+        .manage-button:hover {
+            background-color: #454c53;
+            transform: scale(1.05);
+        }
+        /* Responsive Styling */
+        @media (max-width: 768px) {
+            .container {
+                width: 90%;
+            }
+            li, .manage-button {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav>
+        <div>
+            <a href="{% url 'custom_admin:admin_dashboard' %}">Dashboard</a>
+            <a href="{% url 'logout' %}">Logout</a>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container">
+        <h1>Admin Dashboard</h1>
+
+        <h2>Manage</h2>
+        <ul>
+            <li>
+                <form method="get" action="{% url 'custom_admin:manage_bikes' %}">
+                    <button type="submit" class="manage-button">Manage Bikes</button>
+                </form>
+            </li>
+            <li>
+                <form method="get" action="{% url 'custom_admin:manage_fuel_price' %}">
+                    <button type="submit" class="manage-button">Manage Fuel Prices</button>
+                </form>
+            </li>
+            <li>
+                <form method="get" action="{% url 'custom_admin:manage_trips' %}">
+                    <button type="submit" class="manage-button">Manage Trips</button>
+                </form>
+            </li>
+            <li>
+                <form method="get" action="{% url 'custom_admin:view_bikes_users' %}">
+                    <button type="submit" class="manage-button">View Bikes</button>
+                </form>
+            </li>
+        </ul>
+
+        <h2>Users</h2>
+        <ul>
+            {% for user in users %}
+            <li class="user-item">
+                <span>{{ user.username }}</span>
+                <span>{{ user.email }}</span>
+                <form method="post" action="{% url 'custom_admin:delete_user' user.id %}" style="display:inline;">
+                    {% csrf_token %}
+                    {% if not user.is_superuser %}
+                    <button type="submit" class="delete-button">Delete</button>
+                    {% endif %}
+                </form>
+            </li>
+            {% empty %}
+            <li>No users found.</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+</body>
+</html>

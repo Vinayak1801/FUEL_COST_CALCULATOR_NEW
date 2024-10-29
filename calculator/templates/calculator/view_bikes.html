@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Bikes - Fuel Cost Calculator</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
+
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #fff;  /* Same background as dashboard */
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #57B894;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        h2 {
+            color: #ffffff;
+            margin-bottom: 20px;
+            text-align: center;  /* Centered heading */
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        ul li {
+            background-color: #f8f9fa; /* Light background for list items */
+            padding: 15px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: box-shadow 0.3s;
+        }
+
+        ul li:hover {
+            box-shadow: 25px 25px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .bike-info {
+            flex-grow: 1;
+            padding-left: 20px;
+        }
+
+        img.bike-image {
+            max-width: 150px;
+            max-height: 100px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        p {
+            margin: 5px 0;
+        }
+
+        /* Button styles */
+        .button-link {
+            background-color: #2e5647; /* Same as navigation background */
+            color: white;
+            padding: 8px 15px;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 5px;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .button-link:hover {
+            background-color: #00b3a1; /* Hover effect */
+            transform: scale(1.05);text-decoration: none;
+        }
+
+        .button-link.delete {
+            background-color:   #e73c3c;text-decoration: none; /* Red color for delete button */
+        }
+
+        .button-link.delete:hover {
+            background-color: #c0392b;text-decoration: none; /* Darker red on hover */
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            ul li {
+                flex-direction: column; /* Stack items on small screens */
+                align-items: flex-start;
+            }
+            .actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+        }
+        nav {
+            background-color: #57B894;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .nav-links a:hover {
+            background-color: #2e5647;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-links">
+            <a href="{% url 'calculator:dashboard' %}">Dashboard</a>
+            <a href="{% url 'logout' %}">Logout</a>
+        </div>
+    </nav>
+    <div class="container">
+        <h2>Your Bikes</h2>
+        <ul>
+            {% for bike in bikes %}
+                <li>
+                    <img src="{{ bike.model.image.url }}" alt="{{ bike.model.brand.brand_name }} {{ bike.model.model_name }}" class="bike-image">
+                    <div class="bike-info">
+                        <strong>{{ bike.model.brand.brand_name }} {{ bike.model.model_name }}</strong><br>
+                        <p><strong>Vehicle Number:</strong> {{ bike.vehicle_number }}</p>
+                        <p><strong>Exhaust Type:</strong> {{ bike.exhaust_type }}</p>
+                        <p><strong>Air Filter Type:</strong> {{ bike.air_filter_type }}</p>
+                        <p><strong>Tire Size:</strong> {{ bike.tire_size }}</p>
+                    </div>
+                    <div class="actions">
+                        <a href="{% url 'calculator:edit_bike' bike.id %}" class="button-link">Edit</a>
+                        <a href="{% url 'calculator:delete_bike' bike.id %}" class="button-link delete" onclick="return confirm('Are you sure you want to delete this bike?');">Delete</a>
+                    </div>
+                </li>
+            {% empty %}
+                <li>No bikes added yet.</li>
+            {% endfor %}
+        </ul>
+        
+       
+    </div>
+</body>
+</html>

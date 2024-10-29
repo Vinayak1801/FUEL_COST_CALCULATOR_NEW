@@ -1,0 +1,8 @@
+<form method="post">
+    {% csrf_token %}
+    <label for="state">State:</label>
+    <input type="text" name="state" required>
+    <label for="price">Fuel Price:</label>
+    <input type="number" name="price" step="0.01" required>
+    <button type="submit">Add Fuel Price</button>
+</form>
