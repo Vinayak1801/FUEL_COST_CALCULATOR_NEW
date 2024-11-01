@@ -15,6 +15,7 @@ urlpatterns = [
     
     # Fuel Cost Calculation
     path('calculate_fuel/', views.calculate_fuel_cost, name='calculate_fuel'),
+    path('fuel_history/', views.fuel_history, name='fuel_history'),
     
     # Maintenance Reminder
     path('maintenance_reminder/', views.maintenance_reminder, name='maintenance_reminder'),

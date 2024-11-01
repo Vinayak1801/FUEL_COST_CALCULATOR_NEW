@@ -1,0 +1,122 @@
+/* dstyle.css */
+
+/* General Styling */
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f8f9fa; /* Light gray background */
+    color: #343a40; /* Dark gray text color */
+}
+
+nav {
+    background-color: #343a40; /* Dark navbar */
+    padding: 10px 0;
+    color: #fff;
+}
+
+.nav-links {
+    display: flex;
+    justify-content: flex-end;
+    margin-right: 20px; 
+}
+
+.nav-links a {
+    color: #fff;
+    text-decoration: none;
+    margin-left: 20px;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.nav-links a:hover {
+    color: #ffc107; /* Yellow hover effect */
+}
+
+.container {
+    max-width: 960px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+.welcome-message {
+    font-size: 1.2rem;
+    color: #343a40;
+    margin-bottom: 20px;
+}
+
+/* Statistics Cards */
+.stats-card {
+    background-color: #f0f0f5;
+    padding: 20px;
+    border-radius: 8px;
+    transition: transform 0.3s;
+}
+.stats-card:hover{
+    transform: scale(1.05);
+    box-shadow: 0px 2px 5px rgba(0,0,0,0.2);
+}
+.stats-card h5 {
+    color: #343a40;
+    margin-bottom: 10px;
+}
+
+.stats-card p {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #007bff; /* Blue color for stats */
+}
+
+/* Bikes Section */
+.card {
+    border: none;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s;
+}
+.card:hover{
+    transform: scale(1.05);
+    box-shadow: 0px 2px 5px rgba(0,0,0,0.2);
+}
+.card-img-top {
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    height: 200px;
+    object-fit: cover;
+}
+
+.card-title {
+    color: #343a40;
+}
+
+.card-text {
+    color: #6c757d;
+}
+
+/* Recent Trips Section */
+.trip-card {
+    background-color: #e9ecef;
+    border: none;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Action Links Section */
+.button-link {
+    width: 100%;
+    margin-bottom: 10px;
+    transition: transform 0.3s; 
+}
+.button-link:hover{
+    transform: scale(1.05);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .nav-links {
+        justify-content: center;
+    }
+
+    .nav-links a {
+        margin: 10px;
+    }
+}

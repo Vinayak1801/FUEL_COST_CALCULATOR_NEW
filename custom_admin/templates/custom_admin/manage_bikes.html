@@ -127,7 +127,17 @@
 
     <div class="container">
         <h1>Manage Bike Models</h1>
-
+        <h2>Add New Brand</h2>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <input type="text" name="brand_name" placeholder="Brand Name" required>
+                <button type="submit">Add Brand</button>
+            </div>
+           
+        </form>
+        <br>
+        
         <!-- Form to Add New Bike Model -->
         <div class="form-container">
             <h2>Add New Bike Model</h2>
@@ -179,14 +189,7 @@
         </ul>
 
         <!-- Form to Add New Brand -->
-        <h2>Add New Brand</h2>
-        <form method="post">
-            {% csrf_token %}
-            <div class="form-group">
-                <input type="text" name="brand_name" placeholder="Brand Name" required>
-            </div>
-            <button type="submit">Add Brand</button>
-        </form>
+        
     </div>
     
 </body>

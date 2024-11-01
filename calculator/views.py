@@ -9,29 +9,84 @@ import requests
 from django.views.decorators.cache import cache_control
 from django.http import JsonResponse
 from .forms import BikeForm
+import re
 
 # Registration View
 def register(request):
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
+        confirm_password = request.POST['confirm_password']
+        email = request.POST['email']
 
         # Check if the username already exists
         if User.objects.filter(username=username).exists():
             messages.error(request, "Username already taken. Please choose another one.")
-            return render(request, 'calculator/register.html')
+            return render(request, 'calculator/register.html', {'show_signup': True})
+        
+        # Check if the email already exists
+        if User.objects.filter(email=email).exists():
+            messages.error(request, "Email already taken. Please choose another one.")
+            return render(request, 'calculator/register.html', {'show_signup': True})
 
-        user = User.objects.create_user(username=username, password=password)
+        # Check if passwords match
+        if password != confirm_password:
+            messages.error(request, "Passwords do not match. Please try again.")
+            return render(request, 'calculator/register.html', {'show_signup': True, 'username': username, 'email': email})
+
+        # Validate password strength
+        if not is_valid_password(password):
+            messages.error(request, "Password must be at least 8 characters long and include uppercase, lowercase, digits, and special characters.")
+            return render(request, 'calculator/register.html', {'show_signup': True, 'username': username, 'email': email})
+
+        # Create the user
+        user = User.objects.create_user(username=username, password=password, email=email)
         user.save()
         return redirect('calculator:login')
     
-    return render(request, 'calculator/register.html')
+    return render(request, 'calculator/login.html')
+
+
+
+def is_valid_password(password):
+    # Password must be at least 8 characters long
+    if len(password) < 8:
+        return False
+    # At least one uppercase letter
+    if not re.search(r'[A-Z]', password):
+        return False
+    # At least one lowercase letter
+    if not re.search(r'[a-z]', password):
+        return False
+    # At least one digit
+    if not re.search(r'\d', password):
+        return False
+    # At least one special character
+    if not re.search(r'[!@#$%^&*(),.?":{}|<>]', password):
+        return False
+    return True
 
 # Login View
+from django.contrib.auth import authenticate, login
+from django.shortcuts import render, redirect
+from django.contrib.auth.models import User
+
 def user_login(request):
     if request.method == 'POST':
-        username = request.POST['username']
+        identifier = request.POST['username']  # This can be either username or email
         password = request.POST['password']
+
+        # Check if the identifier is an email by looking up the User model
+        try:
+            if '@' in identifier:
+                user_obj = User.objects.get(email=identifier)
+                username = user_obj.username
+            else:
+                username = identifier
+        except User.DoesNotExist:
+            return render(request, 'calculator/login.html', {'error': 'Invalid username or password'})
+
+        # Authenticate using the determined username
         user = authenticate(request, username=username, password=password)
 
         if user is not None:
@@ -47,6 +102,7 @@ def user_login(request):
     
     return render(request, 'calculator/login.html')
 
+
 # Logout View
 @login_required
 def user_logout(request):
@@ -59,7 +115,17 @@ def user_logout(request):
 def dashboard(request):
     bikes = Bike.objects.filter(owner=request.user).order_by('-id')[:3]
     trips = Trip.objects.filter(owner=request.user).order_by('-id')[:3]
-    return render(request, 'calculator/dashboard.html', {'bikes': bikes, 'trips': trips})
+    fuel_cost_per_liter = float(get_current_fuel_price())
+    b = Bike.objects.filter(owner=request.user)
+    t = Trip.objects.filter(owner=request.user)
+    fuel_data = FuelPrice.objects.all().order_by('effective_date')
+    # Convert data into JSON format for the JavaScript chart
+    history_data = json.dumps({
+        "dates": [fp.effective_date.strftime('%Y-%m-%d') for fp in fuel_data],
+        "prices": [float(fp.price) for fp in fuel_data],
+    })
+    
+    return render(request, 'calculator/dashboard.html', {'bikes': bikes, 'trips': trips,'b':b,'t':t,'fc':fuel_cost_per_liter,'history_data': history_data})
 
 @login_required
 def add_bike(request):
@@ -412,3 +478,17 @@ def edit_bike(request, bike_id):
         form = BikeForm(instance=bike)
 
     return render(request, 'calculator/edit_bike.html', {'form': form, 'bike': bike})
+
+import json
+
+@login_required
+def fuel_history(request):
+    # Fetch fuel history data, ordering by the effective date
+    fuel_data = FuelPrice.objects.all().order_by('effective_date')
+    # Convert data into JSON format for the JavaScript chart
+    history_data = json.dumps({
+        "dates": [fp.effective_date.strftime('%Y-%m-%d') for fp in fuel_data],
+        "prices": [float(fp.price) for fp in fuel_data],
+    })
+    
+    return render(request, 'calculator/fuel_history.html', {'history_data': history_data})

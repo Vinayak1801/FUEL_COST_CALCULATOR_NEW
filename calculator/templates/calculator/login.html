@@ -13,12 +13,24 @@
         <!-- SIGN UP -->
         <div class="col align-items-center flex-col sign-up">
             <div class="form-wrapper align-items-center">
+                
                 <form action="{% url 'calculator:register' %}" method="post" enctype="multipart/form-data">
                     {% csrf_token %}
+                    {% if messages %}
+                            <div class="messages">
+                                {% for message in messages %}
+                                    <p class="{% if message.tags %}{{ message.tags }}{% endif %}">{{ message }}</p>
+                                {% endfor %}
+                            </div>
+                    {% endif %}
                     <div class="form sign-up">
                         <div class="input-group">
                             <i class='bx bxs-user'></i>
                             <input type="text" placeholder="Username" name="username" required>
+                        </div>
+                        <div class="input-group">
+                            <i class='bx bxs-lock-alt'></i>
+                            <input type="email" placeholder="email" name="email" required>
                         </div>
                         <div class="input-group">
                             <i class='bx bxs-lock-alt'></i>
@@ -41,12 +53,13 @@
         <!-- SIGN IN -->
         <div class="col align-items-center flex-col sign-in">
             <div class="form-wrapper align-items-center">
+                
                 <form action="{% url 'calculator:login' %}" method="post" enctype="multipart/form-data">
                     {% csrf_token %}
                     <div class="form sign-in">
                         <div class="input-group">
                             <i class='bx bxs-user'></i>
-                            <input type="text" placeholder="Username" name="username" required>
+                            <input type="text" placeholder="Username or Email" name="username" required>
                         </div>
                         <div class="input-group">
                             <i class='bx bxs-lock-alt'></i>
@@ -437,6 +450,24 @@ body {
         font-size: 2rem;
     }
 }
+.messages p {
+    margin: 1rem 0;
+    padding: 0.5rem;
+    font-size: 0.9rem;
+    color: #ffffff;
+    background-color: #ff4f4f; /* Default to red for errors */
+    border-radius: 0.5rem;
+    text-align: center;
+}
+
+.messages p.success {
+    background-color: #4CAF50; /* Green for success messages */
+}
+
+.messages p.info {
+    background-color: #2196F3; /* Blue for info messages */
+}
+
 
 </style>
 
@@ -455,6 +486,8 @@ body {
     // Clear session storage on login page
     sessionStorage.removeItem('isLoggedIn');
 </script>
+
+
 
 </body>
 </html>

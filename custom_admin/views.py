@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django import forms
 from django.contrib import messages
 from decimal import Decimal
+import json
 
 from calculator.models import Trip,Bike
 
@@ -109,8 +110,14 @@ def delete_bike_model(request, bike_model_id):
 
 @user_passes_test(admin_only)
 def manage_fuel_price(request):
-    fuel_prices = FuelPrice.objects.all()
-    return render(request, 'custom_admin/manage_fuel_price.html', {'fuel_prices': fuel_prices})
+    fuel_prices = FuelPrice.objects.all().order_by('-id')
+    fuel_data = FuelPrice.objects.all().order_by('effective_date')
+    # Convert data into JSON format for the JavaScript chart
+    history_data = json.dumps({
+        "dates": [fp.effective_date.strftime('%Y-%m-%d') for fp in fuel_data],
+        "prices": [float(fp.price) for fp in fuel_data],
+    })
+    return render(request, 'custom_admin/manage_fuel_price.html', {'fuel_prices': fuel_prices,'history_data':history_data})
 
 @user_passes_test(admin_only)
 def add_fuel_price(request):
@@ -134,6 +141,7 @@ def add_fuel_price(request):
 @user_passes_test(admin_only)
 def edit_fuel_price(request, fuel_price_id):
     fuel_price = get_object_or_404(FuelPrice, id=fuel_price_id)
+    
     
     if request.method == 'POST':
         fuel_price.price = request.POST.get('price')

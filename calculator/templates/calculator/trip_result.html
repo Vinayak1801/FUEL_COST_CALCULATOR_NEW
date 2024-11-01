@@ -80,10 +80,10 @@
     <div class="container">
         <h2>Fuel Cost Result</h2>
         <p><strong>Trip:</strong> {{ start_location }} to {{ end_location }}</p>
-        <p><strong>Distance:</strong> {{ distance }} km</p>
-        <p><strong>Total Fuel Cost:</strong> ₹{{ total_cost }}</p>
+        <p><strong>Distance:</strong> {{ distance|floatformat:2 }} km</p>
+        <p><strong>Total Fuel Cost:</strong> ₹{{ total_cost|floatformat:2 }}</p>
         <p><strong>Rider Weight:</strong> {{ rider_weight }} kg</p>
-        <p><strong>Calculated Fuel Efficiency:</strong> {{ calculated_FE }} km/L</p>
+        <p><strong>Calculated Fuel Efficiency:</strong> {{ calculated_FE|floatformat:2 }} km/L</p>
         
         <!-- Ask user if they want to save the trip -->
         <div class="button-group">
